@@ -1,0 +1,34 @@
+//        Room{
+//            int capacity;
+//            List<String> featureList;
+//            List<Intervals> bookedIntervals; // initialised with empty;
+//        }
+//
+//        Interval{
+//            String fromDate;
+//            Integer fromMinute;
+//            String toDate;
+//            Integer toMinute;
+//        }
+//
+//        RoomInventoryInerface{
+//            Room addRoom(Room room, User user); // verify admin user
+//            Room updateRooom(Room room, User user);
+//        }
+//
+//        RoomInventoryImpl will be singleton;
+//
+//
+//        Booking {
+//            Room room;
+//            List<Users> participants;
+//            USer creatingUser;
+//            Interval interval;
+//        }
+//
+//        MeetingBookingService{
+//            List<Rooms> searchBasedOnCriteria(int capacity, List<features> features, Interval interval);
+//            Booking createBooking(Room room, Interval interval, List<Users> participants, User creatingUser);
+//            Booking reschedule(Booking booking, Interval newInterval); // that room is available
+//            Booking cancelBooking(Booking booking); // free a room
+//        }
