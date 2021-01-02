@@ -5,14 +5,13 @@ import model.Interval;
 import model.Room;
 import model.User;
 import service.MeetingBookingService;
-import service.RoomInventory;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class MeetingBookingServiceImpl implements MeetingBookingService {
 
-    private RoomInventoryImpl roomInventory;
+    private final RoomInventoryImpl roomInventory;
 
     public MeetingBookingServiceImpl(RoomInventoryImpl roomInventory){
         this.roomInventory = roomInventory;
@@ -20,17 +19,16 @@ public class MeetingBookingServiceImpl implements MeetingBookingService {
 
     @Override
     public List<Room> searchBasedOnCriteria(int capacity, List<String> features, Interval interval) {
-        List<Room>returnList= roomInventory.getRoomsInInventory()
+        return roomInventory.getRoomsInInventory()
                 .stream()
                 .filter(v->v.getCapacity() >= capacity)
                 .filter(v-> eachFeaturePresent(features,v.getFeatures()))
-                .filter(v->roomAvaialbleInInterval(interval, v.getBookedIntervals()))
+                .filter(v-> roomAvailableInInterval(interval, v.getBookedIntervals()))
                 .collect(Collectors.toList());
-        return returnList;
     }
 
     // helper method
-    private boolean roomAvaialbleInInterval(Interval interval, List<Interval>roomBookedIntervals){
+    private boolean roomAvailableInInterval(Interval interval, List<Interval>roomBookedIntervals){
         return noIntersectingIntervalsPresent(roomBookedIntervals,interval);
     }
 
@@ -46,9 +44,7 @@ public class MeetingBookingServiceImpl implements MeetingBookingService {
 
         if(b.getToMinute() > a.getFromMinute() && b.getToMinute() < a.getToMinute())
             return true;
-        if(b.getFromMinute() > a.getFromMinute() && b.getFromMinute() < a.getToMinute())
-            return true;
-        return false;
+        return b.getFromMinute() > a.getFromMinute() && b.getFromMinute() < a.getToMinute();
     }
 
     private boolean eachFeaturePresent(List<String> featuresRequested, List<String>featuresAvailable){
@@ -64,8 +60,7 @@ public class MeetingBookingServiceImpl implements MeetingBookingService {
     public Booking createBooking(Room room, Interval interval, List<User> participants, User creatingUser) {
         if(noIntersectingIntervalsPresent(room.getBookedIntervals(),interval)){
             room.getBookedIntervals().add(interval);
-            Booking booking = new Booking(room,interval,participants, creatingUser);
-            return booking;
+            return new Booking(room,interval,participants, creatingUser);
         }
         return null;
     }
